@@ -1,0 +1,44 @@
+<head>
+</head>
+<body style="font-size:4em;">
+<div class="deadline" data-time="7:40" data-lable="Start Breakfast"></div>
+<div class="deadline" data-time="8:30" data-lable="Leave for school"></div>
+<script>
+function timeNow(){
+  return (new Date()).toISOString().substr(11,5);
+}
+
+function toTimeToday(s){
+  const [hourString, minuteString] = s.split(':');
+  
+  const now = new Date();
+  now.setHours(parseInt(hourString));
+  now.setMinutes(parseInt(minuteString));
+  return now;
+}
+
+function minutesBetween(a,b){
+  const diff = b-a;
+  return Math.floor(diff/60000);
+}
+
+console.log(minutesBetween(new Date(), toTimeToday('22:30')))
+
+function getUpdate(){
+  const items = Array.from(document.querySelectorAll('.deadline')).map(el => {
+    const targetTime = toTimeToday(el.dataset.time);
+    const {lable} = el.dataset;
+    return {el, targetTime, lable}
+  });
+  console.log(items)
+  return function update(){
+    const now = new Date();
+    items.forEach(item => item.el.innerText = item.lable + ' in: ' + minutesBetween(now, item.targetTime) + ' minutes');
+  }
+}
+
+
+setInterval(getUpdate(), 1000);
+
+</script>
+</body>
